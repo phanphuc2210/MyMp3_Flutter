@@ -26,7 +26,7 @@ class PlayingControls extends StatelessWidget {
   });
 
   Widget _loopIcon(BuildContext context) {
-    final iconSize = 34.0;
+    final iconSize = 28.0;
     if (loopMode == LoopMode.none) {
       return Icon(
         Icons.loop,
@@ -37,7 +37,7 @@ class PlayingControls extends StatelessWidget {
       return Icon(
         Icons.loop,
         size: iconSize,
-        color: Colors.black,
+        color: Colors.white,
       );
     } else {
       //single
@@ -47,12 +47,15 @@ class PlayingControls extends StatelessWidget {
           Icon(
             Icons.loop,
             size: iconSize,
-            color: Colors.black,
+            color: Colors.white,
           ),
-          Center(
+          const Center(
             child: Text(
               '1',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
           ),
         ],
@@ -72,45 +75,46 @@ class PlayingControls extends StatelessWidget {
           },
           child: _loopIcon(context),
         ),
-        SizedBox(
-          width: 12,
+        const SizedBox(
+          width: 20,
         ),
-        NeumorphicButton(
-          style: NeumorphicStyle(
-            boxShape: NeumorphicBoxShape.circle(),
-          ),
-          padding: EdgeInsets.all(18),
-          onPressed: isPlaylist ? onPrevious : null,
-          child: Icon(AssetAudioPlayerIcons.to_start),
-        ),
-        SizedBox(
-          width: 12,
-        ),
-        NeumorphicButton(
-          style: NeumorphicStyle(
-            boxShape: NeumorphicBoxShape.circle(),
-          ),
-          padding: EdgeInsets.all(24),
-          onPressed: onPlay,
-          child: Icon(
-            isPlaying
-                ? AssetAudioPlayerIcons.pause
-                : AssetAudioPlayerIcons.play,
-            size: 32,
+        InkWell(
+          onTap: isPlaylist ? onPrevious : null,
+          child: const Icon(
+            Icons.skip_previous_sharp,
+            color: Colors.white,
+            size: 40,
           ),
         ),
-        SizedBox(
-          width: 12,
+        const SizedBox(
+          width: 20,
         ),
-        NeumorphicButton(
-          style: NeumorphicStyle(
-            boxShape: NeumorphicBoxShape.circle(),
+        InkWell(
+          onTap: onPlay,
+          child: Container(
+            width: 60,
+            height: 60,
+            padding: const EdgeInsets.all(10),
+            decoration: const BoxDecoration(
+                shape: BoxShape.circle, color: Colors.white),
+            child: Icon(
+              isPlaying ? Icons.pause : Icons.play_arrow,
+              size: 40,
+            ),
           ),
-          padding: EdgeInsets.all(18),
-          onPressed: isPlaylist ? onNext : null,
-          child: Icon(AssetAudioPlayerIcons.to_end),
         ),
-        SizedBox(
+        const SizedBox(
+          width: 20,
+        ),
+        InkWell(
+          onTap: isPlaylist ? onNext : null,
+          child: const Icon(
+            Icons.skip_next_sharp,
+            color: Colors.white,
+            size: 40,
+          ),
+        ),
+        const SizedBox(
           width: 45,
         ),
         if (onStop != null)
