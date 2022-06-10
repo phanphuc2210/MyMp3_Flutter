@@ -13,9 +13,10 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: BottomAppBar(
         // shape: CircularNotchedRectangle(),
+
         child: Container(
           color: Colors.black,
           height: 77,
@@ -68,7 +69,19 @@ class _BottomBarState extends State<BottomBar> {
         children: <Widget>[
           Center(
             child: Container(
-              child: Text('Trang home nè ha'),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Trang home nè ha'),
+                  ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _myPage.jumpToPage(3);
+                        });
+                      },
+                      child: Text("Khac khac"))
+                ],
+              ),
             ),
           ),
           Center(
@@ -76,7 +89,13 @@ class _BottomBarState extends State<BottomBar> {
               child: Text('Đây thì là tìm kiếm'),
             ),
           ),
+          Center(
+            child: Container(
+              child: Text('Đây thì là trang 3 trong truyền thuyết'),
+            ),
+          ),
         ],
+
         physics:
             NeverScrollableScrollPhysics(), // Comment this if you need to use Swipe.
       ),

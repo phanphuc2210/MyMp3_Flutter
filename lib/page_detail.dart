@@ -19,6 +19,7 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   late AssetsAudioPlayer assetsAudioPlayer;
   late List<Audio> musicList;
+  Audio myAudio = Audio("");
 
   @override
   void initState() {
@@ -39,111 +40,148 @@ class _DetailPageState extends State<DetailPage> {
         backgroundColor: HexColor("#0E0E10"),
         elevation: 0,
       ),
-      body: Container(
-        padding: const EdgeInsets.only(left: 30, right: 30),
-        color: HexColor("#0E0E10"),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            StreamBuilder<Playing?>(
-              stream: assetsAudioPlayer.current,
-              builder: (context, playing) {
-                if (playing.data != null) {
-                  final myAudio =
-                      find(musicList, playing.data!.audio.assetAudioPath);
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Image.network(
-                        myAudio.metas.image!.path,
-                        width: double.infinity,
-                        fit: BoxFit.contain,
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.only(left: 30, right: 30),
+          color: HexColor("#0E0E10"),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              StreamBuilder<Playing?>(
+                stream: assetsAudioPlayer.current,
+                builder: (context, playing) {
+                  if (playing.data != null) {
+                    myAudio =
+                        find(musicList, playing.data!.audio.assetAudioPath);
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Image.network(
+                          myAudio.metas.image!.path,
+                          width: double.infinity,
+                          fit: BoxFit.contain,
+                        ),
+                        const SizedBox(
+                          height: 45.0,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              myAudio.metas.title!,
+                              style: const TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              myAudio.metas.artist!,
+                              style: const TextStyle(
+                                  color: Colors.white54,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ],
+                    );
+                  }
+                  return const SizedBox();
+                },
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              assetsAudioPlayer.builderCurrent(
+                  builder: ((context, Playing? playing) {
+                return Column(
+                  children: [
+                    assetsAudioPlayer.builderLoopMode(
+                        builder: (context, loopMode) {
+                      return PlayerBuilder.isPlaying(
+                          player: assetsAudioPlayer,
+                          builder: (context, isPlaying) {
+                            return PlayingControls(
+                              loopMode: loopMode,
+                              isPlaylist: true,
+                              isPlaying: isPlaying,
+                              onPlay: () {
+                                assetsAudioPlayer.playOrPause();
+                              },
+                              toggleLoop: () {
+                                assetsAudioPlayer.toggleLoop();
+                              },
+                              onNext: () {
+                                assetsAudioPlayer.next(keepLoopMode: true);
+                              },
+                              onPrevious: () {
+                                assetsAudioPlayer.previous(
+                                    //keepLoopMode: false
+                                    );
+                              },
+                            );
+                          });
+                    }),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    assetsAudioPlayer.builderRealtimePlayingInfos(
+                        builder: (context, RealtimePlayingInfos? info) {
+                      if (info == null) {
+                        return const SizedBox();
+                      }
+                      return PositionSeekWidget(
+                          detail: true,
+                          currentPosition: info.currentPosition,
+                          duration: info.duration,
+                          seekTo: (to) {
+                            assetsAudioPlayer.seek(to);
+                          });
+                    }),
+                  ],
+                );
+              })),
+              const SizedBox(
+                height: 20,
+              ),
+              StreamBuilder<Playing?>(
+                stream: assetsAudioPlayer.current,
+                builder: (context, playing) {
+                  if (playing.data != null) {
+                    final myAudio =
+                        find(musicList, playing.data!.audio.assetAudioPath);
+                    return Container(
+                      width: double.infinity,
+                      height: 400,
+                      decoration: BoxDecoration(
+                          color: Colors.blue.shade900,
+                          borderRadius: BorderRadius.circular(6)),
+                      padding: const EdgeInsets.all(8.0),
+                      child: SingleChildScrollView(
+                        child: Flexible(
+                            child: Text(
+                          myAudio.metas.extra!["lyric"].toString(),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              height: 1.5,
+                              fontWeight: FontWeight.bold),
+                        )),
                       ),
-                      const SizedBox(
-                        height: 45.0,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            myAudio.metas.title!,
-                            style: const TextStyle(
-                                overflow: TextOverflow.ellipsis,
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            myAudio.metas.artist!,
-                            style: const TextStyle(
-                                color: Colors.white54,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold),
-                          )
-                        ],
-                      ),
-                    ],
-                  );
-                }
-                return const SizedBox();
-              },
-            ),
-            const SizedBox(
-              height: 20.0,
-            ),
-            assetsAudioPlayer.builderCurrent(
-                builder: ((context, Playing? playing) {
-              return Column(
-                children: [
-                  assetsAudioPlayer.builderLoopMode(
-                      builder: (context, loopMode) {
-                    return PlayerBuilder.isPlaying(
-                        player: assetsAudioPlayer,
-                        builder: (context, isPlaying) {
-                          return PlayingControls(
-                            loopMode: loopMode,
-                            // isPlaylist: true,
-                            isPlaying: isPlaying,
-                            onPlay: () {
-                              assetsAudioPlayer.playOrPause();
-                            },
-                            toggleLoop: () {
-                              assetsAudioPlayer.toggleLoop();
-                            },
-                            onNext: () {
-                              assetsAudioPlayer.next(keepLoopMode: true);
-                            },
-                            onPrevious: () {
-                              assetsAudioPlayer.previous(
-                                  //keepLoopMode: false
-                                  );
-                            },
-                          );
-                        });
-                  }),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  assetsAudioPlayer.builderRealtimePlayingInfos(
-                      builder: (context, RealtimePlayingInfos? info) {
-                    if (info == null) {
-                      return const SizedBox();
-                    }
-                    return PositionSeekWidget(
-                        detail: true,
-                        currentPosition: info.currentPosition,
-                        duration: info.duration,
-                        seekTo: (to) {
-                          assetsAudioPlayer.seek(to);
-                        });
-                  })
-                ],
-              );
-            })),
-          ],
+                    );
+                  }
+                  return const SizedBox();
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              )
+            ],
+          ),
         ),
       ),
     );

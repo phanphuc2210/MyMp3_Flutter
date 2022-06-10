@@ -51,7 +51,7 @@ class _MyFirebaseAppState extends State<MyFirebaseApp> {
         ),
       );
     } else {
-      return const MaterialApp(title: "My Firebase App", home: LoginPage());
+      return const MaterialApp(title: "My Firebase App", home: HomePage());
     }
   }
 

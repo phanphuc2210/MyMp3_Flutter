@@ -1,4 +1,5 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:get/get.dart';
 import 'package:my_mp3/page_firebase_app.dart';
 import 'package:flutter/material.dart';
 import 'package:my_mp3/test_bottonBar.dart';
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return const GetMaterialApp(
       home: MyFirebaseApp(),
       // home: BottomBar(),
     );

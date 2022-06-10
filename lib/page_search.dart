@@ -3,35 +3,36 @@ import 'dart:async';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:my_mp3/audio_model.dart';
+import 'package:my_mp3/controller/music_controller.dart';
 import 'package:my_mp3/custom_list_title.dart';
 import 'package:my_mp3/helper/hexColor.dart';
 
 class SearchPage extends StatefulWidget {
   late AssetsAudioPlayer assetsAudioPlayer;
-  late bool firstPlay;
-  SearchPage(
-      {Key? key, required this.assetsAudioPlayer, required this.firstPlay})
-      : super(key: key);
+
+  SearchPage({Key? key, required this.assetsAudioPlayer}) : super(key: key);
 
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final musicController = Get.put(MusicController());
   TextEditingController txtSearch = TextEditingController();
   late AssetsAudioPlayer assetsAudioPlayer;
-  late bool firstPlay;
 
   late Future resultsLoaded;
   List allResults = [];
   List<MusicSnapshot> resultsList = [];
+  List<Audio> audioList = [];
 
   @override
   void initState() {
     super.initState();
     assetsAudioPlayer = widget.assetsAudioPlayer;
-    firstPlay = widget.firstPlay;
+
     txtSearch.addListener(_onSearchChanged);
   }
 
@@ -67,6 +68,7 @@ class _SearchPageState extends State<SearchPage> {
     }
     setState(() {
       resultsList = showResults;
+      audioList = fromMusicToAudio(resultsList);
     });
   }
 
@@ -79,15 +81,9 @@ class _SearchPageState extends State<SearchPage> {
     return "complete";
   }
 
-  void playMusic(String url, String title, String image, String artist) async {
-    assetsAudioPlayer.open(
-        Audio.network(url,
-            metas: Metas(
-                title: title,
-                image: MetasImage.network(image),
-                artist: artist)),
-        autoStart: true,
-        showNotification: true);
+  void playListMusic(List<Audio> loopList, int index) async {
+    await assetsAudioPlayer.open(Playlist(audios: loopList, startIndex: index),
+        loopMode: LoopMode.playlist, autoStart: true, showNotification: true);
   }
 
   @override
@@ -129,7 +125,7 @@ class _SearchPageState extends State<SearchPage> {
                       Icons.search,
                       color: Colors.black,
                     ),
-                    hintText: "Enter song",
+                    hintText: "Search",
                     hintStyle: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
@@ -147,21 +143,29 @@ class _SearchPageState extends State<SearchPage> {
                         singer: resultsList[index].music!.singer,
                         cover: resultsList[index].music!.coverUrl,
                         onTap: () {
-                          playMusic(
-                              resultsList[index].music!.url,
-                              resultsList[index].music!.title,
-                              resultsList[index].music!.coverUrl,
-                              resultsList[index].music!.singer);
-                          if (firstPlay == false) {
-                            setState(() {
-                              firstPlay = true;
-                            });
-                          }
+                          musicController.updateLoopList(audioList);
+                          playListMusic(
+                              musicController.loopList.cast<Audio>(), index);
+                          musicController.updateFirstPlayStatus(true);
                         })))
           ],
         ),
       ),
     );
+  }
+
+  List<Audio> fromMusicToAudio(List<MusicSnapshot> snapShot) {
+    List<Audio> audios = [];
+    for (var snap in snapShot) {
+      Audio audio = Audio.network(snap.music!.url,
+          metas: Metas(
+              title: snap.music!.title,
+              image: MetasImage.network(snap.music!.coverUrl),
+              artist: snap.music!.singer));
+      audios.add(audio);
+    }
+
+    return audios;
   }
 }
 
