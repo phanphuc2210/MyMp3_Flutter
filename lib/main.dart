@@ -1,13 +1,11 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:my_mp3/page_firebase_app.dart';
 import 'package:flutter/material.dart';
-import 'package:my_mp3/test_bottonBar.dart';
 
-void main() {
-  // AssetsAudioPlayer.setupNotificationsOpenAction((notification) {
-  //   return true;
-  // });
+void main() async {
+  await GetStorage.init();
   runApp(const MyApp());
 }
 
@@ -20,6 +18,7 @@ class MyApp extends StatelessWidget {
     return const GetMaterialApp(
       home: MyFirebaseApp(),
       // home: BottomBar(),
+      // home: BottomNav2(),
     );
   }
 }

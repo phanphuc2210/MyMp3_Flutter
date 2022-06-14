@@ -1,17 +1,18 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:my_mp3/audio_model.dart';
-import 'package:my_mp3/authentication/login_page.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:my_mp3/controller/music_controller.dart';
-import 'package:my_mp3/custom_list_title.dart';
-import 'package:my_mp3/helper/dialog.dart';
-import 'package:my_mp3/helper/hexColor.dart';
+import 'package:my_mp3/helper/music_helper.dart';
+import 'package:my_mp3/page_album.dart';
+import 'package:my_mp3/page_album_detail.dart';
+import 'package:my_mp3/page_all_music.dart';
 import 'package:my_mp3/page_detail.dart';
+import 'package:my_mp3/page_favorite.dart';
 import 'package:my_mp3/page_search.dart';
+import 'package:my_mp3/page_singer.dart';
+import 'package:my_mp3/page_singer_detail.dart';
 import 'package:my_mp3/player/PositionSeekWidget.dart';
-import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,39 +23,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final musicController = Get.put(MusicController());
+  final favorite = GetStorage();
 
   final PageController _myPage = PageController(initialPage: 0);
 
-  // bool firstPlay = false;
-  late List<Audio> musicList;
-
   final assetsAudioPlayer = AssetsAudioPlayer();
-
-  void playMusic(String url, String title, String image, String artist) async {
-    assetsAudioPlayer.open(
-        Audio.network(url,
-            metas: Metas(
-                title: title,
-                image: MetasImage.network(image),
-                artist: artist)),
-        autoStart: true,
-        showNotification: true);
-  }
-
-  void playListMusic(List<Audio> loopList, int index) async {
-    await assetsAudioPlayer.open(Playlist(audios: loopList, startIndex: index),
-        loopMode: LoopMode.playlist, autoStart: true, showNotification: true);
-  }
-
-  Audio find(List<Audio> source, String fromPath) {
-    return source.firstWhere((element) => element.path == fromPath);
-  }
 
   int? _currentPage;
 
   @override
   void initState() {
     super.initState();
+
     _currentPage = 0;
     _myPage.addListener(() {
       setState(() {
@@ -72,73 +52,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: GradientText(
-            'MyMp3',
-            style: const TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
-            gradientType: GradientType.linear,
-            gradientDirection: GradientDirection.ttb,
-            colors: [
-              Colors.blue.shade400,
-              Colors.blue.shade900,
-            ],
-          ),
-          elevation: 0,
-        ),
-        drawer: Drawer(
-          width: 250,
-          backgroundColor: HexColor("#0E0E10"),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 40.0,
-              ),
-              GradientText(
-                'MyMp3',
-                style: const TextStyle(
-                    fontSize: 30.0, fontWeight: FontWeight.bold),
-                gradientType: GradientType.linear,
-                gradientDirection: GradientDirection.ttb,
-                colors: [
-                  Colors.blue.shade400,
-                  Colors.blue.shade900,
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              InkWell(
-                onTap: () {
-                  showSnackBar(context, "Signing out.....", 300);
-                  assetsAudioPlayer.dispose();
-                  FirebaseAuth.instance.signOut().whenComplete(() {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => const LoginPage()),
-                        (route) => false);
-                    showSnackBar(context, "Please sign in", 5);
-                  }).catchError((error) {
-                    showSnackBar(context, "Sign out not successfully", 3);
-                  });
-                },
-                child: Container(
-                  color: HexColor("#0E0E10"),
-                  height: 40,
-                  child: const Center(
-                    child: Text(
-                      "Sign out",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(
           child: Container(
@@ -155,7 +68,6 @@ class _HomePageState extends State<HomePage> {
                   children: <Widget>[
                     IconButton(
                       iconSize: 30.0,
-                      padding: const EdgeInsets.only(left: 28.0),
                       icon: Icon(
                         Icons.home,
                         color: _currentPage == 0 ? Colors.white : Colors.grey,
@@ -168,7 +80,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                     IconButton(
                       iconSize: 30.0,
-                      padding: const EdgeInsets.only(right: 28.0),
                       icon: Icon(
                         Icons.search,
                         color: _currentPage == 1 ? Colors.white : Colors.grey,
@@ -176,6 +87,42 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () {
                         setState(() {
                           _myPage.jumpToPage(1);
+                        });
+                      },
+                    ),
+                    IconButton(
+                      iconSize: 30.0,
+                      icon: Icon(
+                        Icons.music_note,
+                        color: _currentPage == 2 ? Colors.white : Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _myPage.jumpToPage(2);
+                        });
+                      },
+                    ),
+                    IconButton(
+                      iconSize: 30.0,
+                      icon: Icon(
+                        Icons.album,
+                        color: _currentPage == 3 ? Colors.white : Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _myPage.jumpToPage(3);
+                        });
+                      },
+                    ),
+                    IconButton(
+                      iconSize: 30.0,
+                      icon: Icon(
+                        Icons.favorite,
+                        color: _currentPage == 4 ? Colors.white : Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _myPage.jumpToPage(4);
                         });
                       },
                     ),
@@ -193,58 +140,49 @@ class _HomePageState extends State<HomePage> {
             print('Page Changes to index $int');
           },
           children: [
-            Center(
-              child: Container(
-                color: HexColor("#0E0E10"),
-                child: Center(
-                  child: Column(children: [
-                    Expanded(
-                      child: StreamBuilder<List<MusicSnapshot>>(
-                        stream: MusicSnapshot.getAllMusic(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            return const Center(
-                              child: Text("Lỗi xảy ra khi truy vấn dữ liệu"),
-                            );
-                          } else if (!snapshot.hasData) {
-                            return const Center(
-                              child: Text(
-                                "Đang tải dữ liệu...",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            );
-                          } else {
-                            musicList = fromMusicToAudio(snapshot.data!);
-                            return ListView.builder(
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) => customListTile(
-                                  title: snapshot.data![index].music!.title,
-                                  singer: snapshot.data![index].music!.singer,
-                                  cover: snapshot.data![index].music!.coverUrl,
-                                  onTap: () {
-                                    musicController.updateLoopList(musicList);
-                                    playListMusic(
-                                        musicController.loopList.cast<Audio>(),
-                                        index);
-                                    musicController.updateFirstPlayStatus(true);
-                                  }),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    Obx(() => musicController.firstPlay.value
-                        ? const SizedBox(
-                            height: 38,
-                          )
-                        : const SizedBox())
-                  ]),
-                ),
-              ),
-            ),
+            AllMusicPage(assetsAudioPlayer: assetsAudioPlayer),
             SearchPage(
               assetsAudioPlayer: assetsAudioPlayer,
             ),
+            // SingerPage(
+            //   assetsAudioPlayer: assetsAudioPlayer,
+            // ),
+            // Trang danh sách ca sĩ
+            Navigator(
+              onGenerateRoute: (settings) {
+                Widget page = SingerPage(
+                  assetsAudioPlayer: assetsAudioPlayer,
+                );
+                if (settings.name == 'singerDetailPage') {
+                  Map arg = settings.arguments! as Map;
+                  page = SingerDetailPage(
+                    name: arg['name'],
+                    avatar: arg['avatar'],
+                    assetsAudioPlayer: arg['assetsAudioPlayer'],
+                  );
+                }
+                return MaterialPageRoute(builder: (_) => page);
+              },
+            ),
+            // Trang danh sách Album
+            Navigator(
+              onGenerateRoute: (settings) {
+                Widget page = AlbumPage(
+                  assetsAudioPlayer: assetsAudioPlayer,
+                );
+                if (settings.name == 'albumDetailPage') {
+                  Map arg = settings.arguments! as Map;
+                  page = AlbumDetailPage(
+                    name: arg['name'],
+                    image: arg['image'],
+                    albumList: arg['albumList'],
+                    assetsAudioPlayer: arg['assetsAudioPlayer'],
+                  );
+                }
+                return MaterialPageRoute(builder: (_) => page);
+              },
+            ),
+            FavoritePage(assetsAudioPlayer: assetsAudioPlayer)
           ],
           physics: const NeverScrollableScrollPhysics(),
         ),
@@ -261,6 +199,7 @@ class _HomePageState extends State<HomePage> {
                   },
                   child: Container(
                     height: 66,
+                    width: double.infinity,
                     decoration: const BoxDecoration(
                         color: Colors.black,
                         boxShadow: [
@@ -296,6 +235,14 @@ class _HomePageState extends State<HomePage> {
                               final myAudio = find(
                                   musicController.loopList.cast<Audio>(),
                                   playing.data!.audio.assetAudioPath);
+
+                              // Cập nhật lại bài hát đang phát
+                              // tránh lỗi setState() or markNeedBuild called during build
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                musicController
+                                    .updateCurrentSong(myAudio.metas.id!);
+                              });
+
                               return Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
@@ -337,6 +284,36 @@ class _HomePageState extends State<HomePage> {
                                       ],
                                     ),
                                   ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 9.0),
+                                    child: InkWell(
+                                        onTap: () {
+                                          if (musicController.loveList
+                                              .contains(myAudio.metas.id!)) {
+                                            musicController.loveList
+                                                .remove(myAudio.metas.id!);
+                                          } else {
+                                            musicController.loveList
+                                                .add(myAudio.metas.id!);
+                                          }
+
+                                          favorite.write("favoriteList",
+                                              musicController.loveList);
+                                        },
+                                        child: Obx(() => musicController
+                                                .loveList
+                                                .contains(myAudio.metas.id!)
+                                            ? Icon(
+                                                Icons.favorite,
+                                                color: Colors.blue.shade900,
+                                                size: 28,
+                                              )
+                                            : const Icon(
+                                                Icons.favorite_outline,
+                                                color: Colors.white,
+                                                size: 28,
+                                              ))),
+                                  ),
                                   PlayerBuilder.isPlaying(
                                       player: assetsAudioPlayer,
                                       builder: (context, isPlaying) {
@@ -364,20 +341,5 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
         ));
-  }
-
-  List<Audio> fromMusicToAudio(List<MusicSnapshot> snapShot) {
-    List<Audio> audios = [];
-    for (var snap in snapShot) {
-      Audio audio = Audio.network(snap.music!.url,
-          metas: Metas(
-              title: snap.music!.title,
-              image: MetasImage.network(snap.music!.coverUrl),
-              artist: snap.music!.singer,
-              extra: {"lyric": snap.music!.lyric}));
-      audios.add(audio);
-    }
-
-    return audios;
   }
 }

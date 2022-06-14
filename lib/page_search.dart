@@ -4,10 +4,11 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:my_mp3/audio_model.dart';
+import 'package:my_mp3/model/audio_model.dart';
 import 'package:my_mp3/controller/music_controller.dart';
 import 'package:my_mp3/custom_list_title.dart';
 import 'package:my_mp3/helper/hexColor.dart';
+import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class SearchPage extends StatefulWidget {
   late AssetsAudioPlayer assetsAudioPlayer;
@@ -89,23 +90,27 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: GradientText(
+          'Search',
+          style: const TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
+          gradientType: GradientType.linear,
+          gradientDirection: GradientDirection.ttb,
+          colors: [
+            Colors.blue.shade400,
+            Colors.blue.shade900,
+          ],
+        ),
+        elevation: 0,
+      ),
       body: Container(
         width: double.infinity,
         color: HexColor("#0E0E10"),
-        padding: EdgeInsets.only(top: 8, left: 10, right: 10, bottom: 38),
+        padding: EdgeInsets.only(left: 10, right: 10, bottom: 38),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // const Text(
-            //   "Search",
-            //   style: TextStyle(
-            //       fontSize: 30,
-            //       fontWeight: FontWeight.bold,
-            //       color: Colors.white),
-            // ),
-            const SizedBox(
-              height: 15,
-            ),
             Container(
               alignment: Alignment.centerLeft,
               decoration: BoxDecoration(
@@ -139,6 +144,7 @@ class _SearchPageState extends State<SearchPage> {
                 child: ListView.builder(
                     itemCount: resultsList.length,
                     itemBuilder: (context, index) => customListTile(
+                        id: resultsList[index].music!.id,
                         title: resultsList[index].music!.title,
                         singer: resultsList[index].music!.singer,
                         cover: resultsList[index].music!.coverUrl,
@@ -161,29 +167,11 @@ class _SearchPageState extends State<SearchPage> {
           metas: Metas(
               title: snap.music!.title,
               image: MetasImage.network(snap.music!.coverUrl),
-              artist: snap.music!.singer));
+              artist: snap.music!.singer,
+              extra: {"lyric": snap.music!.lyric}));
       audios.add(audio);
     }
 
     return audios;
   }
 }
-
-// Widget SearchPage() {
-//   TextEditingController txtEmail = TextEditingController();
-//   return Container(
-//     color: HexColor("#0E0E10"),
-//     padding: EdgeInsets.only(top: 8, left: 14, right: 14, bottom: 38),
-//     child: Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: const [
-//         Text(
-//           "Search",
-//           style: TextStyle(
-//               fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
-//         ),
-
-//       ],
-//     ),
-//   );
-// }

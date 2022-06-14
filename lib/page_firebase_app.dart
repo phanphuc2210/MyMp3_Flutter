@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:my_mp3/authentication/login_page.dart';
+import 'package:my_mp3/controller/music_controller.dart';
 import 'package:my_mp3/page_home.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
@@ -15,6 +18,8 @@ class MyFirebaseApp extends StatefulWidget {
 }
 
 class _MyFirebaseAppState extends State<MyFirebaseApp> {
+  final musicController = Get.put(MusicController());
+  final favorite = GetStorage();
   bool ketnoi = false;
   bool loi = false;
 
@@ -58,6 +63,8 @@ class _MyFirebaseAppState extends State<MyFirebaseApp> {
   @override
   void initState() {
     super.initState();
+    musicController
+        .updateLoveList(favorite.read("favoriteList") ?? ["1000000"]);
     _khoiTaoFirebase();
   }
 

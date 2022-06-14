@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:my_mp3/authentication/register_page.dart';
 import 'package:my_mp3/authentication/sign_in_with_firebase_authentication.dart';
 import 'package:my_mp3/helper/dialog.dart';
@@ -148,10 +149,11 @@ class _LoginPageState extends State<LoginPage> {
                       signWithEmailPassword(
                               email: txtEmail.text, password: txtPassword.text)
                           .then((value) {
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => const HomePage()),
-                            (route) => false);
+                        // Navigator.of(context).pushAndRemoveUntil(
+                        //     MaterialPageRoute(
+                        //         builder: (context) => const HomePage()),
+                        //     (route) => false);
+                        Get.back();
                         showSnackBar(
                             context,
                             "Hello ${FirebaseAuth.instance.currentUser?.email ?? ""}",
