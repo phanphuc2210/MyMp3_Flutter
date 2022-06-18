@@ -135,9 +135,6 @@ class _AllMusicPageState extends State<AllMusicPage> {
                         ),
                         InkWell(
                           onTap: () {
-                            // nghe nhạc đi nào !!!!!!
-                            // Ai có nguyện vọng viết báo cáo đây ???
-                            // Quá tuyệt vời :VVVV
                             musicController.updateFirstPlayStatus(false);
                             musicController.updateCurrentSong("-999999");
                             assetsAudioPlayer.dispose();

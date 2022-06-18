@@ -66,31 +66,34 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(
                       height: 10.0,
                     ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 51, 60, 64),
-                        borderRadius: BorderRadius.circular(10.0),
+                    TextFormField(
+                      controller: txtEmail,
+                      validator: (value) => validateEmail(value),
+                      style: const TextStyle(
+                        color: Colors.white,
                       ),
-                      height: 50.0,
-                      child: TextFormField(
-                        controller: txtEmail,
-                        validator: (value) => validateEmail(value),
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                        decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.only(top: 14.0),
-                            prefixIcon: Icon(
-                              Icons.email,
-                              color: Colors.white38,
-                            ),
-                            hintText: "Your Email",
-                            hintStyle: TextStyle(
-                              color: Colors.white38,
-                            )),
-                      ),
+                      decoration: InputDecoration(
+                          filled: true,
+                          fillColor: const Color.fromARGB(255, 51, 60, 64),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide:
+                                  const BorderSide(color: Colors.transparent)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          contentPadding: const EdgeInsets.only(top: 14.0),
+                          prefixIcon: const Icon(
+                            Icons.email,
+                            color: Colors.white38,
+                          ),
+                          hintText: "Your Email",
+                          hintStyle: const TextStyle(
+                            color: Colors.white38,
+                          )),
                     )
                   ],
                 ),
@@ -110,45 +113,48 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(
                       height: 10.0,
                     ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 51, 60, 64),
-                        borderRadius: BorderRadius.circular(10.0),
+                    TextFormField(
+                      controller: txtPassword,
+                      obscureText: _isObscure,
+                      validator: (value) => validateString(value),
+                      style: const TextStyle(
+                        color: Colors.white,
                       ),
-                      height: 50.0,
-                      child: TextFormField(
-                        controller: txtPassword,
-                        obscureText: _isObscure,
-                        validator: (value) => validateString(value),
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                        decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _isObscure = !_isObscure;
-                                });
-                              },
-                              icon: Icon(
-                                _isObscure
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: Colors.white38,
-                              ),
-                            ),
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.only(top: 14.0),
-                            prefixIcon: const Icon(
-                              Icons.lock,
+                      decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _isObscure = !_isObscure;
+                              });
+                            },
+                            icon: Icon(
+                              _isObscure
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                               color: Colors.white38,
                             ),
-                            hintText: "Your Password",
-                            hintStyle: const TextStyle(
-                              color: Colors.white38,
-                            )),
-                      ),
+                          ),
+                          filled: true,
+                          fillColor: const Color.fromARGB(255, 51, 60, 64),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide:
+                                  const BorderSide(color: Colors.transparent)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          contentPadding: const EdgeInsets.only(top: 14.0),
+                          prefixIcon: const Icon(
+                            Icons.lock,
+                            color: Colors.white38,
+                          ),
+                          hintText: "Your Password",
+                          hintStyle: const TextStyle(
+                            color: Colors.white38,
+                          )),
                     )
                   ],
                 ),
@@ -169,33 +175,37 @@ class _RegisterPageState extends State<RegisterPage> {
                           const SizedBox(
                             height: 10.0,
                           ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 51, 60, 64),
-                              borderRadius: BorderRadius.circular(10.0),
+                          TextFormField(
+                            controller: txtRetypePassword,
+                            obscureText: true,
+                            validator: (value) => validateRetypePassword(value),
+                            style: const TextStyle(
+                              color: Colors.white,
                             ),
-                            height: 50.0,
-                            child: TextFormField(
-                              controller: txtRetypePassword,
-                              obscureText: true,
-                              validator: (value) =>
-                                  validateRetypePassword(value),
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
-                              decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.only(top: 14.0),
-                                  prefixIcon: Icon(
-                                    Icons.lock,
-                                    color: Colors.white38,
-                                  ),
-                                  hintText: "Retype your Password",
-                                  hintStyle: TextStyle(
-                                    color: Colors.white38,
-                                  )),
-                            ),
+                            decoration: InputDecoration(
+                                filled: true,
+                                fillColor:
+                                    const Color.fromARGB(255, 51, 60, 64),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(
+                                        color: Colors.transparent)),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                contentPadding:
+                                    const EdgeInsets.only(top: 14.0),
+                                prefixIcon: const Icon(
+                                  Icons.lock,
+                                  color: Colors.white38,
+                                ),
+                                hintText: "Retype your Password",
+                                hintStyle: const TextStyle(
+                                  color: Colors.white38,
+                                )),
                           )
                         ],
                       )
@@ -290,7 +300,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   validateRetypePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return "Bạn chưa nhập email";
+      return "Bạn chưa nhập confirm password";
     } else {
       return txtPassword.text != txtRetypePassword.text
           ? "Password không trùng khớp"

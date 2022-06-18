@@ -65,31 +65,34 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(
                       height: 10.0,
                     ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 51, 60, 64),
-                        borderRadius: BorderRadius.circular(10.0),
+                    TextFormField(
+                      controller: txtEmail,
+                      validator: (value) => validateEmail(value),
+                      style: const TextStyle(
+                        color: Colors.white,
                       ),
-                      height: 50.0,
-                      child: TextFormField(
-                        controller: txtEmail,
-                        validator: (value) => validateEmail(value),
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                        decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.only(top: 14.0),
-                            prefixIcon: Icon(
-                              Icons.email,
-                              color: Colors.white38,
-                            ),
-                            hintText: "Enter your Email",
-                            hintStyle: TextStyle(
-                              color: Colors.white38,
-                            )),
-                      ),
+                      decoration: InputDecoration(
+                          filled: true,
+                          fillColor: const Color.fromARGB(255, 51, 60, 64),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide:
+                                  const BorderSide(color: Colors.transparent)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          contentPadding: const EdgeInsets.only(top: 14.0),
+                          prefixIcon: const Icon(
+                            Icons.email,
+                            color: Colors.white38,
+                          ),
+                          hintText: "Enter your Email",
+                          hintStyle: const TextStyle(
+                            color: Colors.white38,
+                          )),
                     )
                   ],
                 ),
@@ -109,32 +112,35 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(
                       height: 10.0,
                     ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 51, 60, 64),
-                        borderRadius: BorderRadius.circular(10.0),
+                    TextFormField(
+                      controller: txtPassword,
+                      obscureText: true,
+                      validator: (value) => validateString(value),
+                      style: const TextStyle(
+                        color: Colors.white,
                       ),
-                      height: 50.0,
-                      child: TextFormField(
-                        controller: txtPassword,
-                        obscureText: true,
-                        validator: (value) => validateString(value),
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                        decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.only(top: 14.0),
-                            prefixIcon: Icon(
-                              Icons.lock,
-                              color: Colors.white38,
-                            ),
-                            hintText: "Enter your Password",
-                            hintStyle: TextStyle(
-                              color: Colors.white38,
-                            )),
-                      ),
+                      decoration: InputDecoration(
+                          filled: true,
+                          fillColor: const Color.fromARGB(255, 51, 60, 64),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide:
+                                  const BorderSide(color: Colors.transparent)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          contentPadding: const EdgeInsets.only(top: 14.0),
+                          prefixIcon: const Icon(
+                            Icons.lock,
+                            color: Colors.white38,
+                          ),
+                          hintText: "Enter your Password",
+                          hintStyle: const TextStyle(
+                            color: Colors.white38,
+                          )),
                     )
                   ],
                 ),
@@ -143,7 +149,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 InkWell(
                   onTap: () {
-                    if (txtEmail.text != "" && txtPassword.text != "") {
+                    bool? validate = formState.currentState?.validate();
+                    if (validate == true) {
                       error = "";
                       showSnackBar(context, "Signing in.....", 300);
                       signWithEmailPassword(
